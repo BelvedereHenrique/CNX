@@ -22,18 +22,7 @@ namespace CNX.Controllers
         [AllowAnonymous]
         public ActionResult<UserAuthenticationResponseDto> Authenticate([FromBody] UserAuthenticationRequestDto userRequest)
         {
-            try
-            {
-                return _authService.Authenticate(userRequest.Username, userRequest.Password);
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                return BadRequest($"Usuário ou senha inválidos: {e.Message}");
-            }
-            catch (Exception e)
-            {
-                return Problem($"Houve um erro na requisição: {e.Message}");
-            }
+            return _authService.Authenticate(userRequest.Email, userRequest.Password);
         }
 
         [HttpGet]

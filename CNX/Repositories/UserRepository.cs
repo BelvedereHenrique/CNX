@@ -4,40 +4,39 @@ using System.Linq;
 using System.Threading.Tasks;
 using CNX.Contracts.Entities;
 using CNX.Contracts.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CNX.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly List<User> _users;
-
-        public UserRepository()
+        public UserModel GetById(int id)
         {
-            _users = new List<User>()
-                {
-                        new User {Id = 1, Username = "teste1", Password = "teste1pwd"},
-                        new User {Id = 2, Username = "teste2", Password = "teste2"}
-                };
+            using var context = new DatabaseContext();
+            return context
+                .Users
+                .Include(x=>x.Notes)
+                .Single(x => x.Id == id);
         }
 
-        public User Get(string username, string password)
+        public UserModel GetByEmail(string email)
         {
-            return _users.FirstOrDefault(x => string.Equals(x.Username, username, StringComparison.CurrentCultureIgnoreCase) && x.Password == password);
+            using var context = new DatabaseContext();
+            return context.Users.Single(x => x.Email == email);
         }
 
-        public User Get(int id)
+        public async Task<UserModel> CreateAsync(UserModel model)
+        {
+            await using var context = new DatabaseContext();
+            await context.Users.AddAsync(model);
+            await context.SaveChangesAsync();
+
+            return model;
+        }
+
+        public IEnumerable<UserModel> GetAll()
         {
             throw new NotImplementedException();
-        }
-
-        public IEnumerable<User> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<User> GetByParameters(string username)
-        {
-            return _users.Where(x => string.Equals(x.Username, username, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

@@ -1,36 +1,41 @@
 ﻿using System;
-using AutoMapper;
 using CNX.Contracts.DTO;
 using CNX.Contracts.Interfaces;
-using CNX.Repositories;
+using CNX.Utils;
 
 namespace CNX.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserService _userService;
-        private readonly IMapper _mapper;
 
-        public AuthenticationService(IUserService userService,
-            IMapper mapper)
+        public AuthenticationService(IUserService userService)
         {
             _userService = userService;
-            _mapper = mapper;
         }
 
-        public UserAuthenticationResponseDto Authenticate(string username, string password)
+        public UserAuthenticationResponseDto Authenticate(string email, string password)
         {
 
-            var user = _userService.GetByParameters(username);
+            var user = _userService.GetByEmail(email);
 
-            if (user == null)
-                throw new UnauthorizedAccessException("Usuário ou senha inválidos");
+            ValidatePassword(password, user);
 
-            var token = TokenService.GenerateToken(user.Username);
+            var token = TokenService.GenerateToken(user.Email);
 
             user.Password = "";
 
-            return new UserAuthenticationResponseDto(user.Username, token);
+            return new UserAuthenticationResponseDto(user.Email, token);
+        }
+
+        private static void ValidatePassword(string password, UserDto userDto)
+        {
+            var comparePassword = EncryptionUtil.Encrypt(password);
+
+            if (userDto == null || comparePassword != userDto.Password)
+            {
+                throw new UnauthorizedAccessException("Invalid e-mail or password");
+            }
         }
     }
 }

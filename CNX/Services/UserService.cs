@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
+using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.Configuration;
 using CNX.Contracts.DTO;
+using CNX.Contracts.DTO.Response;
 using CNX.Contracts.Entities;
 using CNX.Contracts.Interfaces;
+using CNX.Repositories;
+using CNX.Utils;
 
 namespace CNX.Services
 {
@@ -21,19 +25,60 @@ namespace CNX.Services
             _mapper = mapper;
         }
 
-        public User GetById(int id)
+        public UserDto GetById(int id)
+        {
+            var user = _userRepository.GetById(id);
+            
+            DecryptNotes(user.Notes);
+
+            return _mapper.Map<UserModel, UserDto>(user);
+        }
+
+        public IEnumerable<UserModel> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<User> GetAll()
+        public UserDto GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            var user = _userRepository.GetByEmail(email);
+
+            return _mapper.Map<UserModel, UserDto>(user);
+
         }
 
-        public UserDto GetByParameters(string username)
+        public async Task<NewUserAddedResponseDto> Create(UserDto dto)
         {
-            return _mapper.Map<UserDto>(_userRepository.GetByParameters(username).FirstOrDefault());
+            var errors = dto.ValidateFields();
+
+            if (errors.Count > 0)
+                throw new ArgumentException(string.Join(".",errors));
+
+            var model = _mapper.Map<UserDto, UserModel>(dto);
+
+            EncryptData(model);
+
+            var result = await _userRepository.CreateAsync(model);
+
+            DecryptNotes(model.Notes);
+            return _mapper.Map<UserModel, NewUserAddedResponseDto>(result);
+        }
+
+        private void DecryptNotes(List<NoteModel> modelNotes)
+        {
+            modelNotes.ForEach(x =>
+            {
+                x.Content = EncryptionUtil.Decrypt(x.Content);
+            });
+        }
+
+        private static void EncryptData(UserModel model)
+        {
+            model.Password = EncryptionUtil.Encrypt(model.Password);
+            model.Notes.ForEach(x =>
+            {
+                x.Content = EncryptionUtil.Encrypt(x.Content);
+            });
         }
     }
 }

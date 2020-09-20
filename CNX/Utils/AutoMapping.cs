@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CNX.Contracts.DTO;
+using CNX.Contracts.DTO.Response;
 using CNX.Contracts.Entities;
 
 namespace CNX.Utils
@@ -8,7 +9,11 @@ namespace CNX.Utils
     {
         public AutoMapping()
         {
-            CreateMap<User, UserDto>();
+            CreateMap<UserModel, UserDto>();
+            CreateMap<UserDto, UserModel>();
+            CreateMap<NoteDto, NoteModel>();
+            CreateMap<NoteModel, NoteDto>();
+            CreateMap<UserModel, NewUserAddedResponseDto>();
         }
     }
 }

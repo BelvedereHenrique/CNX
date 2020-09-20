@@ -6,8 +6,9 @@ namespace CNX.Contracts.Interfaces
 {
     public interface IUserRepository
     {
-        User Get(int id);
-        IEnumerable<User> GetAll();
-        IEnumerable<User> GetByParameters(string username);
+        IEnumerable<UserModel> GetAll();
+        UserModel GetById(int id);
+        UserModel GetByEmail(string email);
+        Task<UserModel> CreateAsync(UserModel model);
     }
 }
