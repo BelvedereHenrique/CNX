@@ -1,5 +1,4 @@
-﻿using System;
-using CNX.Contracts.DTO;
+﻿using CNX.Contracts.DTO;
 using CNX.Contracts.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

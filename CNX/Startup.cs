@@ -9,8 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using CNX.Contracts.Interfaces;
+using CNX.Middleware;
 using CNX.Repositories;
 using CNX.Services;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CNX
 {
@@ -29,11 +31,17 @@ namespace CNX
             services.AddAutoMapper(typeof(Startup));
 
             ConfigureAuthentication(services);
+            ConfigureDependencyInjection(services);
+        }
 
+        private static void ConfigureDependencyInjection(IServiceCollection services)
+        {
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
 
+            //Log middleware
+            services.AddSingleton<IHttpLoggerRepository, HttpLoggerRepository>();
         }
 
         private static void ConfigureAuthentication(IServiceCollection services)
@@ -68,6 +76,8 @@ namespace CNX
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseHttpLogger();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -83,6 +93,12 @@ namespace CNX
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                                   ForwardedHeaders.XForwardedProto
             });
         }
     }

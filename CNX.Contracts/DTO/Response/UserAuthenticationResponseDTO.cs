@@ -2,13 +2,13 @@
 {
     public class UserAuthenticationResponseDto
     {
-        public UserAuthenticationResponseDto(string username, string token)
+        public UserAuthenticationResponseDto(string email, string token)
         {
-            Username = username;
+            Email = email;
             Token = token;
         }
 
-        public string Username { get; }
+        public string Email { get; }
         public string Token { get; }
     }
 }
