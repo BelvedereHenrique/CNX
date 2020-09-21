@@ -8,6 +8,8 @@ namespace CNX.Repositories
         public DbSet<UserModel> Users { get; set; }
         public DbSet<NoteModel> Notes { get; set; }
         public DbSet<HttpLogModel> Logs { get; set; }
+        public DbSet<PasswordResetModel> PasswordResets { get; set; }
+
 
 
         //TODO: Extrair pro config

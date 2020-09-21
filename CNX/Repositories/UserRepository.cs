@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CNX.Contracts.Entities;
 using CNX.Contracts.Interfaces;
@@ -10,19 +9,19 @@ namespace CNX.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public UserModel GetById(int id)
+        public async Task<UserModel> GetById(int id)
         {
-            using var context = new DatabaseContext();
-            return context
+           await using var context = new DatabaseContext();
+           return await context
                 .Users
-                .Include(x=>x.Notes)
-                .Single(x => x.Id == id);
+                .Include(x => x.Notes)
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
 
-        public UserModel GetByEmail(string email)
+        public async Task<UserModel> GetByEmail(string email)
         {
-            using var context = new DatabaseContext();
-            return context.Users.Single(x => x.Email == email);
+            await using var context = new DatabaseContext();
+            return await context.Users.SingleOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<UserModel> CreateAsync(UserModel model)
@@ -32,6 +31,16 @@ namespace CNX.Repositories
             await context.SaveChangesAsync();
 
             return model;
+        }
+
+        public async Task UpdatePassword(int userId, string newPassword)
+        {
+            await using var context = new DatabaseContext();
+            var user = await context.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            user.Password = newPassword;
+
+            await context.SaveChangesAsync();
         }
 
         public IEnumerable<UserModel> GetAll()

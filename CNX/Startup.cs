@@ -8,10 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
+using CNX.Configs;
+using CNX.Configs.Email;
 using CNX.Contracts.Interfaces;
 using CNX.Middleware;
 using CNX.Repositories;
 using CNX.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CNX
@@ -29,9 +32,11 @@ namespace CNX
         {
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
+            services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
 
             ConfigureAuthentication(services);
             ConfigureDependencyInjection(services);
+
         }
 
         private static void ConfigureDependencyInjection(IServiceCollection services)
@@ -39,7 +44,11 @@ namespace CNX
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 
+            //singleton
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //Log middleware
             services.AddSingleton<IHttpLoggerRepository, HttpLoggerRepository>();
         }

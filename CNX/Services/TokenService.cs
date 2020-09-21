@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CNX.Configs;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CNX.Services

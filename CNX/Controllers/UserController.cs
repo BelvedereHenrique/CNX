@@ -19,17 +19,10 @@ namespace CNX.Controllers
         }
 
         [HttpGet]
-        public UserDto Get()
-        {
-            return null;
-        }
-
-        [HttpGet]
         [Route("{id}")]
-        public UserDto GetById(int id)
+        public async Task<UserDto> GetById(int id)
         {
-            var user = _userService.GetById(id);
-            user.Password = "";
+            var user = await _userService.GetById(id);
             return user;
         }
 

@@ -12,7 +12,7 @@ namespace CNX.Middleware
 
         private readonly RequestDelegate _next;
 
-        public HttpLogger(RequestDelegate next, IHttpLoggerRepository loggerRepository)
+        public HttpLogger(RequestDelegate next)
         {
             this._next = next;
         }

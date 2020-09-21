@@ -10,6 +10,8 @@ using CNX.Contracts.Entities;
 using CNX.Contracts.Interfaces;
 using CNX.Repositories;
 using CNX.Utils;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IIS;
 
 namespace CNX.Services
 {
@@ -25,23 +27,21 @@ namespace CNX.Services
             _mapper = mapper;
         }
 
-        public UserDto GetById(int id)
+        public async Task<UserDto> GetById(int id)
         {
-            var user = _userRepository.GetById(id);
-            
+            var user = await _userRepository.GetById(id);
+            if (user == null)
+                return null;
+
             DecryptNotes(user.Notes);
+            user.Password = "";
 
             return _mapper.Map<UserModel, UserDto>(user);
         }
 
-        public IEnumerable<UserModel> GetAll()
+        public async Task<UserDto> GetByEmail(string email)
         {
-            throw new NotImplementedException();
-        }
-
-        public UserDto GetByEmail(string email)
-        {
-            var user = _userRepository.GetByEmail(email);
+            var user = await _userRepository.GetByEmail(email);
 
             return _mapper.Map<UserModel, UserDto>(user);
 
@@ -52,7 +52,7 @@ namespace CNX.Services
             var errors = dto.ValidateFields();
 
             if (errors.Count > 0)
-                throw new ArgumentException(string.Join(".",errors));
+                throw new ArgumentException(string.Join(".", errors));
 
             var model = _mapper.Map<UserDto, UserModel>(dto);
 
@@ -62,6 +62,12 @@ namespace CNX.Services
 
             DecryptNotes(model.Notes);
             return _mapper.Map<UserModel, NewUserAddedResponseDto>(result);
+        }
+
+        public async Task UpdatePassword(int userId, string newPassword)
+        {
+            newPassword = EncryptionUtil.Encrypt(newPassword);
+            await _userRepository.UpdatePassword(userId, newPassword);
         }
 
         private void DecryptNotes(List<NoteModel> modelNotes)

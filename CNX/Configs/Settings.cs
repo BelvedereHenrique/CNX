@@ -1,4 +1,4 @@
-﻿namespace CNX
+﻿namespace CNX.Configs
 {
     public static class Settings
     {
