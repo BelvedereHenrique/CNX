@@ -2,11 +2,11 @@
 {
     public class WeatherMapsMain
     {
-        public float temp { get; set; }
-        public float feels_like { get; set; }
-        public float temp_min { get; set; }
-        public float temp_max { get; set; }
-        public int pressure { get; set; }
-        public int humidity { get; set; }
+        public float Temp { get; set; }
+        public float FeelsLike { get; set; }
+        public float TempMin { get; set; }
+        public float TempMax { get; set; }
+        public int Pressure { get; set; }
+        public int Humidity { get; set; }
     }
 }

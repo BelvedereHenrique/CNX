@@ -17,7 +17,7 @@ namespace CNX.Services
             _apiKey = weatherMapsApiConfiguration.Value.ApiKey;
         }
 
-        private static string WeatherApiUrl = "http://api.openweathermap.org/data/2.5/weather?q={City}&appid={ApiKey}&units=metric";
+        private static readonly string WeatherApiUrl = "http://api.openweathermap.org/data/2.5/weather?q={City}&appid={ApiKey}&units=metric";
 
         public async Task<int> GetHometownTemperature(string userHometown)
         {
@@ -28,7 +28,7 @@ namespace CNX.Services
             if (result == null)
                 throw new HttpRequestException("Error while getting current hometown temperature");
 
-            var temperature = Convert.ToInt32(result.Main.temp);
+            var temperature = Convert.ToInt32(result.Main.Temp);
             return temperature;
         }
     }
