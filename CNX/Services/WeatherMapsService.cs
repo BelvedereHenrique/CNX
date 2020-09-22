@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CNX.Configs.WeatherMaps;
@@ -25,7 +26,7 @@ namespace CNX.Services
 
             var result = await HttpUtil.GetAsync<WeatherMapsResult>(queryString);
 
-            if (result == null)
+            if (result == null || result.Cod != 200)
                 throw new HttpRequestException("Error while getting current hometown temperature");
 
             var temperature = Convert.ToInt32(result.Main.Temp);

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using CNX.Contracts.DTO.Recommendation;
 using CNX.Contracts.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +19,10 @@ namespace CNX.Controllers
         }
 
         [HttpGet]
-        public async Task<bool> Get()
+        public async Task<ActionResult< List<RecommendationResponse>>> Get()
         {
             var user = User.Identity.Name;
-            return await _recommendationService.GetRecommendation(user);
+            return await _recommendationService.GetRecommendationAsync(user);
         }
     }
 }

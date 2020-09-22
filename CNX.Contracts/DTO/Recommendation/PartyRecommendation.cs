@@ -12,7 +12,7 @@ namespace CNX.Contracts.DTO.Recommendation
 
         public override PlaylistTypeEnum Recommend()
         {
-            return PlaylistTypeEnum.Rock;
+            return PlaylistTypeEnum.Party;
         }
 
         public override bool IsRightPlaylist(float temperature)

@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using CNX.Configs;
 using CNX.Configs.Email;
+using CNX.Configs.Spotify;
 using CNX.Configs.WeatherMaps;
 using CNX.Contracts.Interfaces;
 using CNX.Middleware;
@@ -35,6 +36,8 @@ namespace CNX
             services.AddAutoMapper(typeof(Startup));
             services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
             services.Configure<WeatherMapsApiConfiguration>(Configuration.GetSection("WeatherMapsApiConfiguration"));
+            services.Configure<SpotifyApiConfiguration>(Configuration.GetSection("SpotifyApiConfiguration"));
+
 
             ConfigureAuthentication(services);
             ConfigureDependencyInjection(services);
