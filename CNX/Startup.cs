@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using CNX.Configs;
 using CNX.Configs.Email;
+using CNX.Configs.WeatherMaps;
 using CNX.Contracts.Interfaces;
 using CNX.Middleware;
 using CNX.Repositories;
@@ -33,10 +34,10 @@ namespace CNX
             services.AddControllers();
             services.AddAutoMapper(typeof(Startup));
             services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
+            services.Configure<WeatherMapsApiConfiguration>(Configuration.GetSection("WeatherMapsApiConfiguration"));
 
             ConfigureAuthentication(services);
             ConfigureDependencyInjection(services);
-
         }
 
         private static void ConfigureDependencyInjection(IServiceCollection services)
@@ -45,10 +46,13 @@ namespace CNX
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
+            services.AddScoped<IRecommendationService, RecommendationService>();
 
             //singleton
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ISpotifyService, SpotifyService>();
+            services.AddSingleton<IWeatherMapsService, WeatherMapsService>();
             //Log middleware
             services.AddSingleton<IHttpLoggerRepository, HttpLoggerRepository>();
         }

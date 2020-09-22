@@ -36,7 +36,7 @@ namespace CNX.Services
         public async Task<UserAuthenticationResponseDto> Authenticate(string email, string password)
         {
 
-            var user = await _userService.GetByEmail(email);
+            var user = await _userService.GetByEmailAsync(email);
 
             ValidatePassword(password, user);
 
@@ -49,7 +49,7 @@ namespace CNX.Services
 
         public async Task ResetPasswordRequestAsync(string email)
         {
-            var user = await _userService.GetByEmail(email);
+            var user = await _userService.GetByEmailAsync(email);
             if (user == null) return;
 
             var confirmationHash = Guid.NewGuid();
@@ -62,7 +62,7 @@ namespace CNX.Services
 
         public async Task ResetPasswordConfirmAsync(ResetPasswordRequestDto dto)
         {
-            var user = await _userService.GetByEmail(dto.Email);
+            var user = await _userService.GetByEmailAsync(dto.Email);
             if (user != null)
             {
                 var request = _mapper.Map<PasswordResetModel, PasswordResetDto>(await _passwordResetRepository.GetPasswordResetRequestAsync(user.Id));
