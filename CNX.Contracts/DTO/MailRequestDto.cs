@@ -2,11 +2,6 @@
 {
     public class MailRequestDto
     {
-        public MailRequestDto()
-        {
-            
-        }
-
         public MailRequestDto(string to, string subject, string body)
         {
             ToEmail = to;

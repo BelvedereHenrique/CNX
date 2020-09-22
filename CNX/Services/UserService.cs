@@ -39,7 +39,7 @@ namespace CNX.Services
             return _mapper.Map<UserModel, UserDto>(user);
         }
 
-        public async Task<UserDto> GetByEmail(string email)
+        public async Task<UserDto> GetByEmailAsync(string email)
         {
             var user = await _userRepository.GetByEmail(email);
 

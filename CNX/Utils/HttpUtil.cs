@@ -34,7 +34,8 @@ namespace CNX.Utils
             var result = await Client.GetAsync(url);
             ValidateHttpResult(result);
 
-            return JsonConvert.DeserializeObject<T>(result.Content.ToString());
+            var resultString = await result.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(resultString);
         }
 
         public static T Get<T>(string url)
