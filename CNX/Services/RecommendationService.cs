@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CNX.Contracts.DTO.Recommendation;
+using CNX.Contracts.DTO.Spotify;
 using CNX.Contracts.Interfaces;
 
 namespace CNX.Services
@@ -26,8 +27,9 @@ namespace CNX.Services
             InstantiateRecommendations();
         }
 
-        public async Task<bool> GetRecommendation(string userEmail)
+        public async Task<List<RecommendationResponse>> GetRecommendationAsync(string userEmail)
         {
+            var result = new List<RecommendationResponse>();
             var user = await _userService.GetByEmailAsync(userEmail);
             
             var hometown = user.Hometown;
@@ -37,9 +39,10 @@ namespace CNX.Services
 
             if (recommend != null)
             {
-
+                result = await _spotifyService.GetPlaylistByTypeAsync(recommend.Value);
             }
-            return true;
+
+            return result;
         }
 
         private void InstantiateRecommendations()

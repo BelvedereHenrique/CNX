@@ -29,6 +29,16 @@ namespace CNX.Utils
             return JsonConvert.DeserializeObject<T>(result.Content.ToString());
         }
 
+        public static async Task<T> PostAsync<T>(string url, HttpContent content)
+        {
+
+            var result = await Client.PostAsync(url, content);
+
+            ValidateHttpResult(result);
+
+            return JsonConvert.DeserializeObject<T>(result.Content.ToString());
+        }
+
         public static async Task<T> GetAsync<T>(string url)
         {
             var result = await Client.GetAsync(url);
