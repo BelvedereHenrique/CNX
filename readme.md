@@ -75,6 +75,9 @@ You can use these if you want to save time:
     "Port": 587
   }
 ```
+## Running
+
+&nbsp;&nbsp;&nbsp;&nbsp; Move to directory "*./cnx/CNX*" and run "*dotnet run*"
 
 ## NOTES
 
