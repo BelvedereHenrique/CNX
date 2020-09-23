@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using CNX.Configs;
+using CNX.Configs.Database;
 using CNX.Configs.Email;
 using CNX.Configs.Spotify;
 using CNX.Configs.WeatherMaps;
@@ -18,6 +19,7 @@ using CNX.Repositories;
 using CNX.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 namespace CNX
@@ -40,6 +42,8 @@ namespace CNX
             services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
             services.Configure<WeatherMapsApiConfiguration>(Configuration.GetSection("WeatherMapsApiConfiguration"));
             services.Configure<SpotifyApiConfiguration>(Configuration.GetSection("SpotifyApiConfiguration"));
+            services.Configure<DatabaseConfiguration>(Configuration.GetSection("Database"));
+            Settings.ConnectionString = Configuration.GetConnectionString("ConnectionString");
 
             ConfigureSwaggerUi(services);
             ConfigureAuthentication(services);

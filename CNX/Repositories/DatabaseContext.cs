@@ -1,4 +1,5 @@
-﻿using CNX.Contracts.Entities;
+﻿using CNX.Configs;
+using CNX.Contracts.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CNX.Repositories
@@ -14,7 +15,7 @@ namespace CNX.Repositories
 
         //TODO: Extrair pro config
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlServer(@"Server=DESKTOP-N0DFB0E\SQLEXPRESS;Database=cnx;User Id=sa;Password=thor;");
+            => options.UseSqlServer(Settings.ConnectionString);
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
