@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using CNX.Configs;
 using CNX.Configs.Spotify;
 using CNX.Contracts.DTO.Recommendation;
 using CNX.Contracts.DTO.Spotify;
@@ -53,7 +54,7 @@ namespace CNX.Services
             var httpResult = await client.GetAsync(url);
 
             if (!httpResult.IsSuccessStatusCode)
-                throw new HttpRequestException("Error while searching for playlists on Spotify.");
+                throw new HttpResponseException("Error while searching for playlists on Spotify.");
 
             var stringContent = await httpResult.Content.ReadAsStringAsync();
 
@@ -87,7 +88,7 @@ namespace CNX.Services
             var resp = (HttpWebResponse)webRequest.GetResponse();
 
             await using var respStr = resp.GetResponseStream();
-            using var rdr = new StreamReader(respStr ?? throw new InvalidOperationException("Error while authenticating with Spotify"), Encoding.UTF8);
+            using var rdr = new StreamReader(respStr ?? throw new HttpResponseException("Error while authenticating with Spotify"), Encoding.UTF8);
             var json = await rdr.ReadToEndAsync();
             rdr.Close();
 

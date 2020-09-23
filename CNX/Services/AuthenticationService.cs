@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using CNX.Configs;
 using CNX.Contracts.DTO;
 using CNX.Contracts.DTO.Request.Authentication;
 using CNX.Contracts.Entities;
@@ -80,7 +82,7 @@ namespace CNX.Services
 
             if (userDto == null || comparePassword != userDto.Password)
             {
-                throw new UnauthorizedAccessException("Invalid e-mail or password");
+                throw new HttpResponseException("Invalid e-mail or password"){Status = HttpStatusCode.BadRequest};
             }
         }
 

@@ -33,12 +33,21 @@ namespace CNX
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new HttpResponseExceptionFilter()));
+
             services.AddAutoMapper(typeof(Startup));
             services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
             services.Configure<WeatherMapsApiConfiguration>(Configuration.GetSection("WeatherMapsApiConfiguration"));
             services.Configure<SpotifyApiConfiguration>(Configuration.GetSection("SpotifyApiConfiguration"));
 
+            ConfigureSwaggerUi(services);
+            ConfigureAuthentication(services);
+            ConfigureDependencyInjection(services);
+        }
+
+        private static void ConfigureSwaggerUi(IServiceCollection services)
+        {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -49,11 +58,12 @@ namespace CNX
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Please insert JWT with Bearer into field",
+                    Description = "Insira o token JWT no campo abaixo. Ex: Bearer xxxyyyyzzz",
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
                     {
                         new OpenApiSecurityScheme
                         {
@@ -67,8 +77,6 @@ namespace CNX
                     }
                 });
             });
-            ConfigureAuthentication(services);
-            ConfigureDependencyInjection(services);
         }
 
         private static void ConfigureDependencyInjection(IServiceCollection services)

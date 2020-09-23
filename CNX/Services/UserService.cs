@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using AutoMapper;
+using CNX.Configs;
 using CNX.Contracts.DTO;
 using CNX.Contracts.DTO.Response;
 using CNX.Contracts.Entities;
@@ -52,7 +53,7 @@ namespace CNX.Services
             var errors = dto.ValidateFields();
 
             if (errors.Count > 0)
-                throw new ArgumentException(string.Join(".", errors));
+                throw new HttpResponseException(string.Join(".", errors));
 
             var model = _mapper.Map<UserDto, UserModel>(dto);
 

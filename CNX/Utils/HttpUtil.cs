@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using CNX.Configs;
 using Newtonsoft.Json;
 
 namespace CNX.Utils
@@ -61,7 +62,7 @@ namespace CNX.Utils
         private static void ValidateHttpResult(HttpResponseMessage httpResponseMessage)
         {
             if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-                throw new HttpRequestException();
+                throw new HttpResponseException(httpResponseMessage.ReasonPhrase);
         }
 
     }
