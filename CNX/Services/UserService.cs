@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Security.Cryptography.Xml;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using CNX.Configs;
@@ -9,10 +6,7 @@ using CNX.Contracts.DTO;
 using CNX.Contracts.DTO.Response;
 using CNX.Contracts.Entities;
 using CNX.Contracts.Interfaces;
-using CNX.Repositories;
 using CNX.Utils;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
 
 namespace CNX.Services
 {

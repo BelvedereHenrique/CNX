@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CNX.Contracts.Entities;
 using CNX.Contracts.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -41,11 +39,6 @@ namespace CNX.Repositories
             user.Password = newPassword;
 
             await context.SaveChangesAsync();
-        }
-
-        public IEnumerable<UserModel> GetAll()
-        {
-            throw new NotImplementedException();
         }
     }
 }
