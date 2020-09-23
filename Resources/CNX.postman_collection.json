@@ -1,0 +1,290 @@
+{
+	"info": {
+		"_postman_id": "741280b3-9d55-4bfc-8548-7eb9078f5c80",
+		"name": "CNX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "CNX Authenticate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"YOUR_EMAIL@gmail.com\",\r\n    \"password\":\"123321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44366/v1/authentication/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44366",
+							"path": [
+								"v1",
+								"authentication",
+								"login"
+							]
+						},
+						"description": "Autentica na plataforma através do e-mail e senha"
+					},
+					"response": [
+						{
+							"name": "CNX Authenticate",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"YOUR_EMAIL@gmail.com\",\r\n    \"password\":\"YOUR_NEW_PASSWORD\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:44366/v1/authentication/login",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "44366",
+									"path": [
+										"v1",
+										"authentication",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Server",
+									"value": "Microsoft-IIS/10.0"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "ASP.NET"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 21 Sep 2020 05:14:51 GMT"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"email\": \"YOUR_EMAIL@gmail.com\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJlbHZlZGVyZS5oZW5yaXF1ZUBnbWFpbC5jb20iLCJuYmYiOjE2MDA2NjUyOTEsImV4cCI6MTYwMDY3MjQ5MSwiaWF0IjoxNjAwNjY1MjkxfQ.XDELuCD63nB26K3rimhs5gz5i3AwLpA_By_mHgChcDg\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Confirm Authentication",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJlbHZlZGVyZS5oZW5yaXF1ZUBnbWFpbC5jb20iLCJuYmYiOjE2MDA4MTc5ODYsImV4cCI6MTYwMDgyNTE4NiwiaWF0IjoxNjAwODE3OTg2fQ.jlegArBv-FnJ4Ll1X55snNbsI0mhi_5uOht7DAoJgn0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44366/v1/authentication/authenticated",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44366",
+							"path": [
+								"v1",
+								"authentication",
+								"authenticated"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request password reset",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44366/v1/authentication/reset?email=YOUR_EMAIL@gmail.com",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44366",
+							"path": [
+								"v1",
+								"authentication",
+								"reset"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "YOUR_EMAIL@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password reset confirmation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"hash\":\"HASH\",\r\n    \"email\":\"YOUR_EMAIL@gmail.com\",\r\n    \"newPassword\":\"YOUR_NEW_PASSWORD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44366/v1/authentication/reset/confirm",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44366",
+							"path": [
+								"v1",
+								"authentication",
+								"reset",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get user by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJlbHZlZGVyZS5oZW5yaXF1ZUBnbWFpbC5jb20iLCJuYmYiOjE2MDA2NjUyOTEsImV4cCI6MTYwMDY3MjQ5MSwiaWF0IjoxNjAwNjY1MjkxfQ.XDELuCD63nB26K3rimhs5gz5i3AwLpA_By_mHgChcDg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44366/v1/users/USER_ID",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44366",
+							"path": [
+								"v1",
+								"users",
+								"USER_ID"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"YOUR_NAME\",\r\n    \"email\":\"EMAIL_ADDRESS@gmail.com\",\r\n    \"hometown\": \"Araraquara\",\r\n    \"password\": \"123321\",\r\n    \"notes\": [\r\n        {\"content\":\"Minha nota 01\"},\r\n        {\"content\":\"Minha nota 02\"}\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44366/v1/users",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44366",
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Get Spotify playlist recommendation based on hometown current temperature",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJlbHZlZGVyZS5oZW5yaXF1ZUBnbWFpbC5jb20iLCJuYmYiOjE2MDA4MjI2MjgsImV4cCI6MTYwMDgyOTgyOCwiaWF0IjoxNjAwODIyNjI4fQ.wVmiwkb8Ljoqnfu2X3HEG-w2UjLshsanI-8hwTtJHjw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:44366/v1/recommendation/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44366",
+					"path": [
+						"v1",
+						"recommendation",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

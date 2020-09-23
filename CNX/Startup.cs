@@ -7,6 +7,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
+using CNX.Configs;
+using CNX.Configs.Database;
+using CNX.Configs.Email;
+using CNX.Configs.Spotify;
+using CNX.Configs.WeatherMaps;
+using CNX.Contracts.Interfaces;
+using CNX.Middleware;
+using CNX.Repositories;
+using CNX.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace CNX
 {
@@ -21,25 +35,90 @@ namespace CNX
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+                options.Filters.Add(new HttpResponseExceptionFilter()));
 
+            services.AddAutoMapper(typeof(Startup));
+            services.Configure<EmailConfiguration>(Configuration.GetSection("EmailConfiguration"));
+            services.Configure<WeatherMapsApiConfiguration>(Configuration.GetSection("WeatherMapsApiConfiguration"));
+            services.Configure<SpotifyApiConfiguration>(Configuration.GetSection("SpotifyApiConfiguration"));
+            services.Configure<DatabaseConfiguration>(Configuration.GetSection("Database"));
+            Settings.ConnectionString = Configuration.GetConnectionString("ConnectionString");
+
+            ConfigureSwaggerUi(services);
+            ConfigureAuthentication(services);
+            ConfigureDependencyInjection(services);
+        }
+
+        private static void ConfigureSwaggerUi(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "CNX Api",
+                    Version = "v1"
+                });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Insira o token JWT no campo abaixo. Ex: Bearer xxxyyyyzzz",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] { }
+                    }
+                });
+            });
+        }
+
+        private static void ConfigureDependencyInjection(IServiceCollection services)
+        {
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
+            services.AddScoped<IRecommendationService, RecommendationService>();
+
+            //singleton
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ISpotifyService, SpotifyService>();
+            services.AddSingleton<IWeatherMapsService, WeatherMapsService>();
+            //Log middleware
+            services.AddSingleton<IHttpLoggerRepository, HttpLoggerRepository>();
+        }
+
+        private static void ConfigureAuthentication(IServiceCollection services)
+        {
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
             services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                }).AddJwtBearer(x =>
-                {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                });
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
             services.AddAuthorization(x =>
             {
@@ -53,6 +132,20 @@ namespace CNX
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "CNX API V1");
+                c.RoutePrefix = string.Empty;
+            });
+
+            app.UseHttpLogger();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -68,6 +161,12 @@ namespace CNX
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                                   ForwardedHeaders.XForwardedProto
             });
         }
     }
