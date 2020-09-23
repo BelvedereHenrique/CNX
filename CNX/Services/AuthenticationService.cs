@@ -82,7 +82,7 @@ namespace CNX.Services
 
             if (userDto == null || comparePassword != userDto.Password)
             {
-                throw new HttpResponseException("Invalid e-mail or password"){Status = HttpStatusCode.BadRequest};
+                throw new HttpResponseException("Invalid e-mail or password"){Status = HttpStatusCode.Unauthorized};
             }
         }
 
