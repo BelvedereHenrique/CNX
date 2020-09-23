@@ -11,9 +11,6 @@ namespace CNX.Repositories
         public DbSet<HttpLogModel> Logs { get; set; }
         public DbSet<PasswordResetModel> PasswordResets { get; set; }
 
-
-
-        //TODO: Extrair pro config
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlServer(Settings.ConnectionString);
 
