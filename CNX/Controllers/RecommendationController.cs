@@ -18,6 +18,12 @@ namespace CNX.Controllers
             _recommendationService = recommendationService;
         }
 
+        /// <summary>
+        /// Gets Spotify playlists recommendation, based on the user hometown current temperature.
+        /// </summary>
+        /// <remarks>
+        /// The user identification occurs by the auth token provided
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult< List<RecommendationResponse>>> Get()
         {
